@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <record id="stock_quant_inherit" model="ir.ui.view">
+            <field name="name">stock.quant.view.form.inherit</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree_editable"/>
+            <field name="arch" type="xml">
+                <field name="inventory_quantity" position="replace">
+                    <field name="invisi_qty" invisible="1"/>
+                    <field name="inventory_quantity" attrs="{'invisible': [('invisi_qty', '==', 1)]}" decoration-danger="inventory_quantity &lt; 0" readonly="0"/>
+                </field>
+                <field name="available_quantity" position="replace">
+                    <field name="invisi_qty" invisible="1"/>
+                    <field name="available_quantity" attrs="{'invisible': [('invisi_qty', '==', 1)]}" optional="show"/>
+                </field>
+            </field>
+        </record>
+    
+    </data>
+</odoo>
