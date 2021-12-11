@@ -9,7 +9,7 @@
     'website': 'https://autodidactati.com',
     'summary': 'Oculta cantidades de stock en ubicaciones que los usuarios no son responsables',
     'description': '''Oculta cantidades de stock en ubicaciones que los usuarios no son responsables''',
-    'depends': ['stock'],
+    'depends': ['stock', 'sale'],
     'data': [
         'views/stock_location.xml',
         'views/stock_quant.xml'
