@@ -12,6 +12,7 @@
     'depends': ['stock', 'sale'],
     'data': [
         'views/stock_location.xml',
+        'views/product_template.xml',
         'views/stock_quant.xml'
     ],
     'installable': True,

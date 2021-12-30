@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Form -->
+        <!-- view used for product.template only -->
+        <record model="ir.ui.view" id="product_template_form_view_procurement_button_inherit">
+            <field name="name">product.template_procurement__inherit</field>
+            <field name="model">product.template</field>
+            <field name="groups_id" eval="[(4, ref('stock.group_stock_user'))]"/>
+            <field name="inherit_id" ref="product.product_template_only_form_view"/>
+            <field name="arch" type="xml">
+                <data>
+                    <div name="button_box" position="inside">
+                        <field name="invisi_qty" invisible="1" />
+                        <button type="object"
+                            name="action_open_quants"
+                            attrs="{'invisible':[('type', '!=', 'product')]}"
+                            class="oe_stat_button" icon="fa-cubes">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value" widget="statinfo">
+                                    <field name="qty_for_user" widget="statinfo" nolabel="1" class="mr4"/>
+                                    <field name="uom_name"/>
+                                </span>
+                                <span class="o_stat_text">Mi stock</span>
+                            </div>
+                        </button>
+                    </div>
+                    
+                    <xpath expr="//div[@name='button_box']/button[@name='action_open_quants']" position="attributes">
+                        <attribute name="attrs">{'invisible':[('invisi_qty','=',1)]}</attribute>
+                    </xpath>
+                    
+                    <xpath expr="//div[@name='button_box']/button[@name='action_product_tmpl_forecast_report']" position="attributes">
+                        <attribute name="attrs">{'invisible':[('invisi_qty','=',1)]}</attribute>
+                    </xpath>
+                </data>
+            </field>
+        </record>
+
+        <!-- Kanban -->
+        <record model="ir.ui.view" id="product_template_kanban_stock_view_inherit">
+            <field name="name">Product Template Kanban Stock Inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_kanban_view"/>
+            <field name="arch" type="xml">
+                <xpath expr="//kanban" position="inside">
+                    <field name="type"/>
+                    <field name="invisi_qty" invisible="1"/>
+                </xpath>
+                <xpath expr="//div[@name='product_lst_price']/following::div" position="attributes">
+                    <attribute name="attrs">{'invisible':[('invisi_qty','=',1)]}</attribute>
+                </xpath>
+                <xpath expr="//div[@name='product_lst_price']" position="after">
+                    <div t-if="record.type.raw_value == 'product'">Mi Stock: <field name="qty_for_user"/> <field name="uom_id"/></div>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- Tree -->
+        <record id="view_stock_product_template_tree_inherit" model="ir.ui.view">
+            <field name="name">product.template.stock.tree.inherit.inherit</field>
+            <field name="model">product.template</field>
+            <field name="inherit_id" ref="product.product_template_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="uom_id" position="replace">
+                    <field name="invisi_qty" invisible="1"/>
+                    <field name="qty_for_user" attrs="{'invisible':[('type', '!=', 'product')]}" optional="show" decoration-danger="qty_available &lt; 0"/>
+                </field>
+                <field name="qty_available" position="replace">
+                  <field name="qty_available" attrs="{'invisible':['|',('type', '!=', 'product'),('invisi_qty', '=', 1)]}" optional="show" decoration-danger="qty_available &lt; 0"/>
+                </field>
+                <field name="virtual_available" position="replace">
+                  <field name="virtual_available" attrs="{'invisible':['|',('type', '!=', 'product'),('invisi_qty', '=', 1)]}" optional="show" decoration-danger="virtual_available &lt; 0" decoration-bf="1"/>
+                </field>
+            </field>
+        </record>
+
+        <!-- Tree product.product (variables) -->
+        <record id="view_stock_product_tree_inherit" model="ir.ui.view">
+            <field name="name">product.stock.tree.inherit.inherit</field>
+            <field name="model">product.product</field>
+            <field name="inherit_id" ref="product.product_product_tree_view"/>
+            <field name="arch" type="xml">
+                <field name="price" position="after">
+                    <field name="invisi_qty" invisible="1"/>
+                    <field name="qty_for_user" attrs="{'invisible':[('type', '!=', 'product')]}" optional="show" decoration-danger="qty_available &lt; 0"/>
+                </field>
+                <field name="qty_available" position="replace">
+                    <field name="qty_available" attrs="{'invisible':['|',('type', '!=', 'product'),('invisi_qty', '=', 1)]}" optional="show" decoration-danger="virtual_available &lt; 0" decoration-warning="virtual_available == 0" decoration-bf="1"/>
+                </field>
+                <field name="virtual_available" position="replace">
+                    <field name="virtual_available" attrs="{'invisible':['|',('type', '!=', 'product'),('invisi_qty', '=', 1)]}" string="Cantidad pronosticada" optional="show" decoration-danger="virtual_available &lt; 0" decoration-warning="virtual_available == 0"/>
+                </field>                
+            </field>
+        </record>
+
+    </data>
+</odoo>
